@@ -1,1 +1,427 @@
 # project1
+#include<iostream>
+#include<fstream>
+
+using namespace std;
+
+class shopping 
+{
+    private:
+    int pcode; 
+    float price;
+    float dis; // discount
+    string pname; // p=product
+
+    public:
+    void menu();
+    void administrator();
+    void buyer();
+    void add();
+    void edit();
+    void rem(); // remove
+    void list();
+    void receipt();
+
+};
+
+void shopping :: menu()
+{
+    // need email and password for login purpose;
+    m:
+    int choice;
+    string email;
+    string password;
+
+    cout<<"\t\t\t\t_______________________________\n";
+    cout<<"\t\t\t\t                               \n";
+    cout<<"\t\t\t\t    SuperMarket Main Menu      \n";
+    cout<<"\t\t\t\t                               \n";
+    cout<<"\t\t\t\t_______________________________\n";
+    cout<<"\t\t\t\t                               \n";
+    cout<<"\t\t\t\t|  1) Administrator  |\n";
+    cout<<"\t\t\t\t|                    |\n";
+    cout<<"\t\t\t\t|  2) Buyer          |\n";
+    cout<<"\t\t\t\t|                    |\n";
+    cout<<"\t\t\t\t|  3) Exit           |\n";
+    cout<<"\t\t\t\t|                    |\n";
+    cout<<"\t\t\t\t Please Select:"; 
+    cin>>choice;
+
+    switch(choice)
+    {
+        // choice for administrator;
+        case 1:
+        cout<<"\t\t\t Please Login \n";
+        cout<<"\t\t\t Enter Email  \n";
+        cin>>email;
+        cout<<"\t\t\t Password     \n";
+        cin>>password;
+
+        if(email=="amanjindalxyz@gmail.com" && password=="aman@123") 
+        {
+            administrator();
+        }
+        else
+        {
+            break;
+        }
+
+        case 2:
+        {
+            buyer();
+        }
+        
+        case 3:
+        {
+            exit(0);
+        }
+
+        default:
+        {
+            cout<<"Please select from the given option";
+        }
+    }
+    goto m;
+
+}
+
+void shopping:: administrator()
+{
+    m:
+    int choice;
+    cout<<"\n\n\n\t\t\t Administrator menu";
+    cout<<"\n\t\t\t|____1) Add The product____|";
+    cout<<"\n\t\t\t|                          |";
+    cout<<"\n\t\t\t|____2) Modify The Product_|";
+    cout<<"\n\t\t\t|                          |";
+    cout<<"\n\t\t\t|____3) Delete The Product_|";
+    cout<<"\n\t\t\t|                          |";
+    cout<<"\n\t\t\t|____4) Back To Main Menu__|";
+    
+    cout<<"\n\n\t Please Enter Your Choice ";
+    cin>>choice;
+
+    switch(choice)
+    {
+     case 1:
+        add();
+        break;
+
+      case 2:
+        edit();
+        break;
+
+      case 3:
+        rem();
+        break;
+
+       case 4:
+        menu();
+        break;
+
+        default:
+          cout<<"Invalid Choice!";
+    }
+    goto m;
+}
+
+void shopping:: buyer()
+{
+    m:
+    int choice;
+    cout<<"\t\t\t  Buyer  \n";
+    cout<<"\t\t\t________________\n";
+    cout<<"                      \n";
+    cout<<"\t\t\t 1) Buy Product \n";
+    cout<<"                      \n";
+    cout<<"\t\t\t 2) Go Back     \n";
+    cout<<"\t\t\t Enter Your Choice: ";
+
+    cin>>choice;
+
+    switch(choice)
+    {
+        case 1:
+        receipt();
+        break;
+
+        case 2:
+        menu();
+
+        default:
+        {
+            cout<<"Invalid Choice";
+        }
+    }
+    goto m;
+}
+
+void shopping :: add()
+{
+    // inside this function, we use file handling operation;
+    // create an object of fstream class;
+    m:
+    fstream data; // data is name of object.
+    int c;
+    int token=0;
+    float p;
+    float d;
+    string n;
+
+    cout<<"\n\n\t\t\t Add New Product";
+    cout<<"\n\n\t Product code of the product";
+    cin>>pcode;
+    cout<<"n\n\t Name of the product ";
+    cin>>pname;
+    cout<<"\n\n\t Price of the product";
+    cin>>price;
+    cout<<"\n\n\t Discount on Product";
+    cin>>dis;
+
+    // after that we will have to open a file
+    // bcoz this add function used by administrator
+    // so we have to store these product detail inside a file
+    // so that we can display to the user that we have these product in our super market;
+
+    data.open("database.txt",ios::in); 
+
+    if(!data) // if this file doesn't exit,
+    {
+        data.open("database.txt",ios::app|ios::out); // app-append mode/out-writing mode;
+        data<<" "<<pcode<<" "<<pname<<" "<<price<<" "<<dis<<"\n";
+        data.close();
+    }
+    else
+    {
+        // initially we are initializing index of file.
+        data>>c>>n>>p>>d;
+
+        while(!data.eof()) // eof=end of file function.
+        {
+            if(c==pcode)
+            {
+                token++;
+            }
+            data>>c>>n>>p>>d;
+        }
+        data.close(); 
+    
+
+    if(token==1) // 
+     goto m;
+     else
+      {
+        data.open("database.txt",ios::app|ios::out); // app-append mode/out-writing mode;
+        data<<" "<<pcode<<" "<<pname<<" "<<price<<" "<<dis<<"\n";
+        data.close();
+      }
+
+    }
+     cout<<"\n\n\t\t Record Inserted !";
+    
+}
+
+void shopping:: edit()
+{
+    fstream data,data1;
+    int pkey;
+    int token=0;
+    int c;
+    float p;
+    float d;
+    string n;
+
+    cout<<"\n\t\t\t Modify The Record";
+    cout<<"\n\t\t\t Product Code :";
+    cin>>pkey;
+
+    // check if file exist or not.
+    data.open("database.txt",ios::in);
+    if(!data)
+    {
+        cout<<"\n\nFile doesn't Exist:";
+    }
+    else
+    {
+        data1.open("database1.txt",ios::app|ios::out);
+        data>>pcode>>pname>>price>>dis;
+        while(!data.eof())
+        {
+            if(pkey==pcode) // pkey is key enter by administrator.
+            {
+                cout<<"\n\t\t Product new Code:";
+                cin>>c;
+                cout<<"\n\t\t Name Of Product:";
+                cin>>n;
+                cout<<"\n\t\t price:";
+                cin>>p;
+                cout<<"\n\t\t Discount:";
+                cin>>d;
+                data1<<" "<<c<<" "<<n<<" "<<p<<" "<<d<<"\n";
+                cout<<"\n\n\t\t Record Edited";
+                token++;
+            }
+            else
+            {
+                data1<<" "<<pcode<<" "<<pname<<" "<<price<<" "<<dis<<"\n";
+            }
+            data>>pcode>>pname>>price>>dis;
+        }
+        data.close();
+        data1.close();
+
+        remove("database.txt");
+        rename("database1.txt","database.txt");
+
+        if(token==0)
+        {
+            cout<<"\n\n Record not found sorry!";
+        }
+    }
+}
+
+void shopping :: rem()
+{
+    fstream data,data1;
+    int pkey;
+    int token=0;
+    cout<<"\n\n\t Delete product";
+    cout<<"\n\n\t product code :";
+    cin>>pkey;
+    data.open("database.txt",ios::in);
+
+    if(!data)
+    {
+        cout<<"file doesn't exist";
+    }
+
+    else
+    {
+        data1.open("database1.txt",ios::app|ios::out);
+        data>>pcode>>pname>>price>>dis;
+        while(!data.eof())
+        {
+            if(pcode==pkey)
+            {
+                cout<<"\n\t\t product deleted successfully";
+                token++;
+            }
+            else
+            {
+                // data1 file will be displayed.
+                data1<<" "<<pcode<<" "<<pname<<" "<<price<<" "<<dis<<"\n";
+            }
+            data>>pcode>>pname>>price>>dis;
+        }
+        data.close();
+        data1.close();
+        remove("database.txt");
+        rename("database1.txt","database.txt"); // old name to new name.
+
+        if(token==0)
+        {
+            cout<<"\n\n  Record not found";
+        }
+    }
+}
+
+void shopping :: list()
+{
+    fstream data;
+    data.open("database.txt",ios::in);
+    cout<<"\n\n|_______________________________________________________\n";
+    cout<<"ProNo\t\tName\t\tPrice\n"; 
+    cout<<"\n\n|_______________________________________________________\n";
+    data>>pcode>>pname>>price>>dis;
+    while(!data.eof())
+    {
+        cout<<pcode<<"\t\t"<<pname<<"\t\t"<<price<<"\n";
+        data>>pcode>>pname>>price>>dis;
+    }
+    data.close();
+}
+
+void shopping :: receipt()
+{
+    fstream data;
+
+    int arrc[100];
+    int arrq[100];
+    char choice;
+    int c=0;
+    float amount=0;
+    float dis=0;
+    float total=0;
+
+    cout<<"\n\n\t\t\t\t RECEIPT ";
+    data.open("database.txt",ios::in);
+    if(!data)
+    {
+        cout<<"\n\n Empty Database";
+    }
+
+    else
+    {
+        data.close();
+
+//if file is created,then we have to call the list function.
+        list();
+        cout<<"\n_________________________________\n";
+        cout<<"\n|                                \n";
+        cout<<"\n    Please Place The Order       \n";
+        cout<<"\n|                                \n";
+        cout<<"\n_________________________________\n";
+        do
+        {
+            m:
+            // ask the user to enter product code and quantity;
+            cout<<"\n\n Enter Product Code: ";
+            cin>>arrc[c];
+            cout<<"\n\nEnter the product quantity:";
+            cin>>arrq[c];
+            for(int i=0;i<c;i++)
+            {
+                if(arrc[c]==arrc[i])
+                {
+                    cout<<"\n\n Duplicate product code. Please Try Again!";
+                    goto m;
+                }
+            }
+            c++;
+            cout<<"\n\n Do you want to buy another product? if yes then press y else no";
+            cin>>choice;
+        }
+        while(choice=='y');
+
+        cout<<"\n\n\t\t\t_________________RECEIPT__________\n";
+        cout<<"\nProduct No\t Product Name\t Product Quantity\tprice\tAmount\tAmount with discount\n";
+
+        for(int i=0;i<c;i++)
+        {
+            data.open("database.txt",ios::in);
+            data>>pcode>>pname>>price>>dis;
+            while(!data.eof())
+            {
+                if(pcode==arrc[i])
+                {
+                    amount=price*arrq[i];
+                    dis=amount-(amount*dis/100);
+                    total=total+dis;
+                    cout<<"\n"<<pcode<<"\t\t"<<pname<<"\t\t"<<arrq[i]<<"\t\t"<<price<<"\t"<<amount<<"\t\t"<<dis;
+
+                }
+                data>>pcode>>pname>>price>>dis;
+            }
+        }
+        data.close();
+
+    }
+    cout<<"\n\n___________________________________________";
+    cout<<"\n Total Amount: "<<total;
+}
+
+int main()
+{
+    shopping s;
+    s.menu();
+}
